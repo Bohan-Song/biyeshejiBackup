@@ -1,0 +1,164 @@
+C51 COMPILER V9.54   DS18B20                                                               03/08/2022 12:41:34 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN ds18b20.OBJ
+COMPILER INVOKED BY: E:\Professional Software\Keil\C51\BIN\C51.EXE ds18b20.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+                    - TABS(2)
+
+line level    source
+
+   1          #include <head.h>
+   2          
+   3          uchar data temp_DQ_data[2];       //温度值的16位 高八位 低八位
+   4          uchar data temp_work_data[5];     //温度转换数据，前四位分别为百、十 、个、小数后一位
+   5          uchar code dis_dec[17]={0,1,1,2,2,3,3,4,4,5,5,6,7,8,8,9,9};  //显示小数
+   6          uchar temp_value_int,temp_value_point;
+   7          uchar temp_warn=30;
+   8                          
+   9          void delay1us(uchar t) 
+  10          {
+  11   1        for(;t>0;t--); 
+  12   1      }
+  13          
+  14          void DQ_reset(void)
+  15          {
+  16   1        DQ = 1;             //DQ复位,不要也可行
+  17   1        delay1us(1);        //稍做延时
+  18   1        DQ = 0;             //单片机拉低总线
+  19   1        delay1us(50);       //精确延时，维持至少480us
+  20   1        DQ = 1;             //释放总线，即拉高了总线
+  21   1        while(DQ);
+  22   1        delay1us(45);       //此处延时有足够,确保能让DS18B20发出存在脉冲       
+  23   1      }
+  24          
+  25          void DQ_write(uchar a)
+  26          { 
+  27   1         uchar i;
+  28   1         for(i=8;i>0;i--)
+  29   1         {
+  30   2           DQ=1;
+  31   2          _nop_();
+  32   2          _nop_();
+  33   2            DQ=0;
+  34   2          _nop_();
+  35   2          _nop_();
+  36   2          _nop_();
+  37   2          _nop_();
+  38   2          _nop_();
+  39   2          DQ=a&0x01;
+  40   2          delay1us(6);
+  41   2          a=a/2;
+  42   2         }
+  43   1         DQ=1;
+  44   1         delay1us(1);   
+  45   1      }
+  46          
+  47          
+  48          uchar DQ_read(void)
+  49          {  
+  50   1         uchar i;
+  51   1         uchar value=0;
+  52   1         for(i=8;i>0;i--)
+  53   1         {
+  54   2          DQ=1;
+C51 COMPILER V9.54   DS18B20                                                               03/08/2022 12:41:34 PAGE 2   
+
+  55   2          _nop_();
+  56   2          _nop_();
+  57   2          value>>=1; 
+  58   2          DQ=0;    
+  59   2          _nop_();
+  60   2          _nop_();
+  61   2          _nop_();
+  62   2          _nop_();
+  63   2          DQ=1;
+  64   2          _nop_();
+  65   2          _nop_();
+  66   2          _nop_();
+  67   2          _nop_();
+  68   2          if(DQ)
+  69   2          {
+  70   3            value|=0x80;
+  71   3          }
+  72   2          delay1us(6);    
+  73   2         }
+  74   1         DQ = 1;
+  75   1         return(value);
+  76   1      } 
+  77          
+  78          void read_temp(void)
+  79          {  
+  80   1         DQ_reset(); 
+  81   1         delay1us(2);
+  82   1         DQ_write(0xcc);   
+  83   1         DQ_write(0xbe);      //读暂存器指令      
+  84   1         temp_DQ_data[0]=DQ_read();
+  85   1         temp_DQ_data[1]=DQ_read();   
+  86   1      }
+  87          
+  88          void Temp_Work(void)
+  89          {
+  90   1        uchar fuhao=0;       
+  91   1        if(temp_DQ_data[1]>127)
+  92   1        {
+  93   2          temp_DQ_data[1]=(256-temp_DQ_data[1]);
+  94   2          temp_DQ_data[0]=(256-temp_DQ_data[0]);
+  95   2          fuhao=1;   //给出负号标志
+  96   2        }
+  97   1        temp_work_data[4]=temp_DQ_data[0]&0x0f;
+  98   1        temp_value_point = dis_dec[temp_work_data[4]];
+  99   1        temp_work_data[0]=temp_value_point;
+ 100   1        temp_work_data[4]=((temp_DQ_data[0]&0xf0)>>4)|((temp_DQ_data[1]&0x0f)<<4);
+ 101   1        temp_value_int = temp_work_data[4];   
+ 102   1        temp_work_data[3]=temp_work_data[4]/100;
+ 103   1        temp_work_data[1]=temp_work_data[4]%100;
+ 104   1        temp_work_data[2]=temp_work_data[1]/10;
+ 105   1        temp_work_data[1]=temp_work_data[1]%10;
+ 106   1        if(!temp_work_data[3])
+ 107   1        {
+ 108   2          temp_work_data[3] = 10;
+ 109   2          if(!temp_work_data[2])
+ 110   2          {
+ 111   3            temp_work_data[2] = 10;
+ 112   3          }
+ 113   2        }
+ 114   1      
+ 115   1        if(fuhao)     //LCD1602液晶显示‘-’
+ 116   1        {
+C51 COMPILER V9.54   DS18B20                                                               03/08/2022 12:41:34 PAGE 3   
+
+ 117   2      //    write_com(0x89);
+ 118   2      //    write_data('-');
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          
+ 123          void DQ_init(void)
+ 124          {
+ 125   1         DQ_reset();
+ 126   1         delay1us(1);
+ 127   1         DQ_write(0xcc);   //写跳过读ROM指令
+ 128   1         DQ_write(0x44);   //写温度转换指令
+ 129   1      }
+ 130          
+ 131          void Tempt(void)
+ 132          {
+ 133   1        DQ_init();
+ 134   1        read_temp();
+ 135   1        Temp_Work();
+ 136   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    269    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

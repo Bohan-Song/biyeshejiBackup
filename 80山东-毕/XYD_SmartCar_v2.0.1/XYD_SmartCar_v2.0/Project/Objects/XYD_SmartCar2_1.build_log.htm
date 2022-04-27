@@ -1,0 +1,110 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.25.1.0
+Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: s 1377936160@qq.com, d, LIC=5852Z-JHWTS-9G270-BU8IM-78GHR-9GFXV
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.25.1.0
+Toolchain Path:  E:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.25.1.0
+Dialog DLL:      DCM.DLL V1.17.0.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.1.0
+Dialog DLL:      TCM.DLL V1.34.0.0
+ 
+<h2>Project:</h2>
+C:\Users\13779\Desktop\XYD_SmartCar_v2.0\XYD_SmartCar_v2.0\Project\F103R8.uvprojx
+Project File Date:  04/23/2022
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'STM32F103R8'
+assembling startup_stm32f10x_md.s...
+compiling core_cm3.c...
+compiling misc.c...
+compiling stm32f10x_pwr.c...
+compiling stm32f10x_bkp.c...
+compiling stm32f10x_rtc.c...
+compiling stm32f10x_usart.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_exti.c...
+compiling stm32f10x_rcc.c...
+compiling main.c...
+..\User\API\bee\bee.h(9): warning:  #1295-D: Deprecated declaration BEE_Config - give arg types
+  void BEE_Config();
+..\User\API\moyor.c\motor.h(26): warning:  #1295-D: Deprecated declaration MOTOR_Config - give arg types
+  void MOTOR_Config();
+..\User\main.c(32): warning:  #177-D: variable "zyy"  was declared but never referenced
+  	u16 zyy=0;
+..\User\main.c(33): warning:  #177-D: variable "lxy"  was declared but never referenced
+  	int lxy=0;
+..\User\main.c(34): warning:  #177-D: variable "flag"  was declared but never referenced
+  	int flag=1;
+..\User\main.c(35): warning:  #177-D: variable "ppx"  was declared but never referenced
+  	int ppx=0;
+..\User\main.c(37): warning:  #177-D: variable "current_value"  was declared but never referenced
+  	float current_value=0.0;
+..\User\main.c(41): warning:  #177-D: variable "code"  was declared but never referenced
+  	char code;
+..\User\main.c: 8 warnings, 0 errors
+compiling stm32f10x_tim.c...
+compiling stm32f10x_it.c...
+compiling delay.c...
+compiling water.c...
+compiling systick.c...
+compiling key.c...
+compiling bee.c...
+..\User\API\bee\bee.h(9): warning:  #1295-D: Deprecated declaration BEE_Config - give arg types
+  void BEE_Config();
+..\User\API\bee\bee.c(35): warning:  #1-D: last line of file ends without a newline
+  	
+..\User\API\bee\bee.c: 2 warnings, 0 errors
+compiling system_stm32f10x.c...
+compiling led.c...
+compiling motor.c...
+..\User\API\moyor.c\motor.h(26): warning:  #1295-D: Deprecated declaration MOTOR_Config - give arg types
+  void MOTOR_Config();
+..\User\API\moyor.c\motor.c: 1 warning, 0 errors
+compiling timer.c...
+..\User\API\timer\timer.c(297): warning:  #223-D: function "printf" declared implicitly
+  		printf("current_speed1 is %d \r\n",current_speed);
+..\User\API\timer\timer.c: 1 warning, 0 errors
+compiling SR.c...
+..\User\API\moyor.c\motor.h(26): warning:  #1295-D: Deprecated declaration MOTOR_Config - give arg types
+  void MOTOR_Config();
+..\User\API\sr\SR.c: 1 warning, 0 errors
+compiling usart.c...
+..\User\API\uster\usart.c(153): warning:  #223-D: function "memset" declared implicitly
+  		  memset(USART_RX_BUF,0x00,200);
+..\User\API\uster\usart.c: 1 warning, 0 errors
+compiling ir.c...
+compiling TCRT.c...
+linking...
+Program Size: Code=11548 RO-data=268 RW-data=228 ZI-data=5076  
+FromELF: creating hex file...
+".\Objects\XYD_SmartCar2_1.axf" - 0 Error(s), 14 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.2.0.pack
+                Keil.STM32F1xx_DFP.2.2.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_STM32F103R8
+  E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>

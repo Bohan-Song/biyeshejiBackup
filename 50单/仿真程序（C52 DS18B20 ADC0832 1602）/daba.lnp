@@ -1,0 +1,6 @@
+"lcd.obj",
+"main.obj",
+"ds18b20.obj",
+"ADC0832.obj" 
+TO "daba" 
+RAMSIZE(256) 

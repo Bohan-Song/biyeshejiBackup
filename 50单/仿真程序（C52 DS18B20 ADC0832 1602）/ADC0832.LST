@@ -1,0 +1,94 @@
+C51 COMPILER V9.54   ADC0832                                                               03/11/2022 09:57:54 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ADC0832
+OBJECT MODULE PLACED IN ADC0832.OBJ
+COMPILER INVOKED BY: E:\Professional Software\Keil\C51\BIN\C51.EXE ADC0832.C OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+                    - TABS(2)
+
+line level    source
+
+   1          #include<head.h>
+   2          
+   3          unsigned char CH1=0x00;
+   4          unsigned char CH2=0x01;
+   5          
+   6          //******************adc0832****************************//
+   7          //通道的选择:0x02就是单通道0；0x03就是单通道1；
+   8          //0x00就是双通道ch0=“+”；   ch0=“-”
+   9          //0x01就是双通道ch0=“-”；   ch0=“+”
+  10          //*****************************************************//
+  11          unsigned char ADconv(unsigned char CH)
+  12          {
+  13   1        unsigned char  i=0 , x =0 , y = 0 ;
+  14   1        unsigned char temp;
+  15   1        AD0832_CLK = 0 ;         //时钟置低平
+  16   1        AD0832_DI  = 1 ;         //开始信号为高电平
+  17   1        AD0832_CS  = 0 ;         //片选信号置低，启动AD转换芯片
+  18   1        //输入开始信号（构成一个正脉冲） 
+  19   1        _nop_();
+  20   1        AD0832_CLK = 1 ;         //时钟上升沿，输入开始信号
+  21   1        _nop_();
+  22   1        AD0832_CLK = 0 ;         //时钟下降沿
+  23   1        //模拟信号输入模式选择（1：单模信号，0：双模差分信号）
+  24   1        AD0832_DI  = 1 ; 
+  25   1         _nop_();
+  26   1        AD0832_CLK = 1 ;         //时钟上升沿，输入开始信号
+  27   1        _nop_();
+  28   1        AD0832_CLK = 0 ;         //时钟下降沿
+  29   1        //模拟信号输入通道选择（1：通道CH1，0：通道CH0）
+  30   1        AD0832_DI  = CH ;          //选择通道0
+  31   1         _nop_();
+  32   1        AD0832_CLK = 1 ;         //时钟上升沿，输入开始信号
+  33   1        _nop_();
+  34   1        AD0832_CLK = 0 ;         //时钟下降沿
+  35   1      //================================================================= 
+  36   1        AD0832_DI  = 1 ;     //数据线置高，准备接收数据
+  37   1        for(i = 0 ; i<8 ; i++)   //从高位移入数据
+  38   1         {
+  39   2            AD0832_CLK = 1 ;      
+  40   2               _nop_();
+  41   2            AD0832_CLK = 0 ;             //时钟下降沿,AD0832输出数据，高位（MSB）先
+  42   2               x = x<<1;        //数据左移位，补0
+  43   2          if(AD0832_DO ==1) 
+  44   2             x = x | 0x01;             //如果数据为"1"，移入1，
+  45   2         }                      //如果数据为"0"，移入0，
+  46   1        
+  47   1        for(i = 0 ; i<8 ; i++)       //从低位移入数据
+  48   1        {  
+  49   2               y = y>>1;      //数据左移位，补0
+  50   2           if(AD0832_DO ==1) 
+  51   2               y = y | 0x80;      //如果数据为"1"，移入1，
+  52   2                        //如果数据为"0"，移入0
+  53   2           AD0832_CLK = 1 ;      
+  54   2            _nop_();
+C51 COMPILER V9.54   ADC0832                                                               03/11/2022 09:57:54 PAGE 2   
+
+  55   2           AD0832_CLK = 0 ;         //时钟下降沿,AD0832输出数据，高位（MSB）先
+  56   2         }
+  57   1         //数据线置高，释放总线，完成一次转换
+  58   1          AD0832_CLK = 1 ;        
+  59   1          AD0832_DI  = 1 ;         
+  60   1          AD0832_CS  = 1 ;  
+  61   1      
+  62   1          if(x==y)     //输出
+  63   1          {
+  64   2             temp = x;  
+  65   2          }
+  66   1      
+  67   1        return temp;
+  68   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     91    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,6 @@
+"main.obj",
+"lcd.obj",
+"ds18b20.obj",
+"XPT2046.obj" 
+TO "warn" 
+RAMSIZE(256) 

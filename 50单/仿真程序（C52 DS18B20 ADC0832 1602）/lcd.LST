@@ -1,0 +1,135 @@
+C51 COMPILER V9.54   LCD                                                                   03/11/2022 09:57:52 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN lcd.OBJ
+COMPILER INVOKED BY: E:\Professional Software\Keil\C51\BIN\C51.EXE lcd.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TAB
+                    -S(2)
+
+line level    source
+
+   1          #include<head.h>
+   2          
+   3          void delay_ms(uint ms)     //延时1ms * ms
+   4          {
+   5   1        uint x,y;
+   6   1        for(x=ms;x>0;x--)
+   7   1          for(y=113;y>0;y--);
+   8   1      }
+   9          
+  10          void write_com(uchar com)    //写命令
+  11          {
+  12   1        lcdrs=0;
+  13   1        P0=com;
+  14   1        delay_ms(2);
+  15   1        lcden=1;
+  16   1        delay_ms(2);
+  17   1        lcden=0;
+  18   1      }
+  19          
+  20          void write_data(uchar dat)    //写数据
+  21          {
+  22   1        lcdrs=1;
+  23   1        P0=dat;
+  24   1        delay_ms(2);
+  25   1        lcden=1;
+  26   1        delay_ms(2);
+  27   1        lcden=0;
+  28   1      }
+  29          
+  30          void LCD_ShowChar(uchar x,uchar dat)
+  31          {
+  32   1        write_com(x);
+  33   1        write_data(dat);
+  34   1      }
+  35          
+  36          //m^n函数
+  37          uint LCD_pow(uchar m,uchar n)
+  38          {
+  39   1        uint result=1;   
+  40   1        while(n--)result*=m;    
+  41   1        return result;
+  42   1      }   
+  43          
+  44          //显示N个数字
+  45          //x :坐标  
+  46          //len :数字的位数
+  47          //num:数值(0~65536);        
+  48          void LCD_ShowNum(uchar x,uint num,uchar len)
+  49          {           
+  50   1        uchar t,temp;
+  51   1        uchar enshow=0;              
+  52   1        for(t=0;t<len;t++)
+  53   1        {
+  54   2          temp=(num/LCD_pow(10,len-t-1))%10;
+C51 COMPILER V9.54   LCD                                                                   03/11/2022 09:57:52 PAGE 2   
+
+  55   2          if(enshow==0&&t<(len-1))
+  56   2          {
+  57   3            if(temp==0)
+  58   3            {
+  59   4              LCD_ShowChar(x+t,'0');
+  60   4              continue;
+  61   4            }else enshow=1;    
+  62   3          }
+  63   2          LCD_ShowChar(x+t,temp+'0'); 
+  64   2        }
+  65   1      } 
+  66          
+  67          //显示一个字符号串
+  68          void LCD_ShowString(uchar x,uchar *chr)
+  69          {
+  70   1        unsigned char j=0;
+  71   1        while (chr[j]!='\0')
+  72   1        {   
+  73   2          LCD_ShowChar(x,chr[j]);
+  74   2          x+=1;
+  75   2          j++;
+  76   2        }
+  77   1      }
+  78          
+  79          void LCD_Init(void)            //1602液晶初始化
+  80          {
+  81   1        lcden=0;
+  82   1        write_com(0x38);
+  83   1        write_com(0x0c);
+  84   1        write_com(0x06);
+  85   1        write_com(0x01);
+  86   1        write_com(0x80);
+  87   1      
+  88   1        LCD_ShowString(0x80,"T:00.0'C");
+  89   1        LCD_ShowChar(0x86,0xdf);
+  90   1        
+  91   1        LCD_ShowString(0xc0,"PH:00.0 TDS:0000");
+  92   1      }
+  93          
+  94          void LCD_Scan(void)
+  95          {
+  96   1        LCD_ShowNum(0x82,temp_value_int,2);
+  97   1        LCD_ShowNum(0x85,temp_value_point,1);
+  98   1        
+  99   1        LCD_ShowNum(0xc3,ph/10,2);
+ 100   1        LCD_ShowNum(0xc6,ph%10,1);
+ 101   1        
+ 102   1        LCD_ShowNum(0xcc,zhuodu,4);
+ 103   1      }
+ 104          
+ 105          
+ 106          
+ 107          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    360    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      11
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.54   LCD                                                                   03/11/2022 09:57:52 PAGE 3   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
